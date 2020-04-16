@@ -1,0 +1,183 @@
+openapi: 3.0.0
+info:
+  title: SAKPaaS API
+  description: SAKPaaS API
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: "1.0"
+servers:
+- url: https://api.happyhamster.org/v1
+  description: Production
+paths:
+  /locations:
+    get:
+      tags:
+      - Locations
+      description: |
+        Searches for locations in the given range.
+      operationId: searchLocations
+      parameters:
+      - name: latitude
+        in: query
+        description: Latitude
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: number
+      - name: longitude
+        in: query
+        description: Longitude
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: number
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                maxItems: 100
+                type: array
+                items:
+                  $ref: '#/components/schemas/Location'
+  /locations/{id}:
+    get:
+      tags:
+      - Locations
+      description: |
+        Get details for a specific location.
+      parameters:
+      - name: id
+        in: path
+        description: id
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Location'
+        "404":
+          description: Not found
+  /locations/{id}/occupancy:
+    post:
+      tags:
+      - Occupancy
+      description: |
+        Add or remove current capacity.
+      parameters:
+      - name: id
+        in: path
+        description: id of the place
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        description: The estimated occupancy by the buyer
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/body'
+        required: true
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Location'
+        "400":
+          description: Malformed request
+  /locations/{id}/check-in:
+    post:
+      tags:
+      - Occupancy
+      description: |
+        Check in to the Supermarket.
+      parameters:
+      - name: id
+        in: path
+        description: id of the place
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "204":
+          description: Success
+        "404":
+          description: Not found
+components:
+  schemas:
+    Location:
+      required:
+      - id
+      - latitude
+      - longitude
+      - name
+      - occupancy
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 73621836
+        name:
+          type: string
+          example: LIDL Mannheim Marktplatz
+        country:
+          type: string
+          example: DE
+        city:
+          type: string
+          example: Mannheim
+        postcode:
+          type: string
+          example: "68161"
+        street:
+          type: string
+          example: Hauptstraße
+        housenumber:
+          type: string
+          example: 1-5
+        occupancy:
+          title: Occupancy
+          maximum: 1
+          minimum: 0
+          type: number
+        latitude:
+          title: Latitude
+          type: number
+          example: 49.4953494
+        longitude:
+          title: Longitude
+          type: number
+          example: 8.3563969
+    body:
+      type: object
+      properties:
+        occupancy:
+          maximum: 1
+          minimum: 0
+          type: number
+          example: 0.75
+        clientType:
+          type: string
+          enum:
+          - IOT
+          - WEB_APP

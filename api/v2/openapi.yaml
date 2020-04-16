@@ -1,0 +1,281 @@
+openapi: 3.0.0
+servers:
+  - description: HappyHamster Production
+    url: https://api.HappyHamster.org/v2
+  - description: HappyHamster Integration
+    url: https://api.int.HappyHamster.org/v2
+  - description: HappyHamster Development
+    url: https://api.dev.HappyHamster.org/v2
+info:
+  description: SAKPaaS API
+  version: "2.0"
+  title: SAKPaaS API
+  license:
+    name: Apache 2.0
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+paths:
+  '/locations':
+    get:
+      tags:
+        - Locations
+      operationId: searchLocations
+      description: |
+        Searches for locations in the given range.
+      parameters:
+        - in: query
+          name: Coordinates
+          description: Latitude
+          required: true
+          explode: true
+          schema:
+            $ref: '#/components/schemas/Coordinates'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Location'
+                maxItems: 100
+  '/locations/{id}':
+    get:
+      description: |
+        Get details for a specific location.
+      tags:
+        - Locations
+      parameters:
+        - in: path
+          name: id
+          description: id
+          required: true
+          schema:
+            $ref: '#/components/schemas/LocationId'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Location'
+        '404':
+          description: Not found
+  '/locations/search/{key}':
+    get:
+      description: |
+        Get details for a specific location.
+      tags:
+        - Locations
+      parameters:
+        - in: path
+          name: key
+          description: key
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Location'
+                maxItems: 100
+        '404':
+          description: Not found
+  '/locations/{id}/occupancy':
+    post:
+      description: |
+        Add or remove current capacity.
+      tags:
+        - Occupancy
+      parameters:
+        - in: path
+          name: id
+          description: id of the place
+          required: true
+          schema:
+            $ref: '#/components/schemas/LocationId'
+      requestBody:
+        description: The estimated occupancy by the buyer
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OccupancyReport'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Location'
+        '400':
+          description: Malformed request
+
+components:
+  schemas:
+    Location:
+      title: Location
+      description: A physical location which represents a supermarket or similar
+      type: object
+      nullable: false
+      required:
+        - id
+        - name
+        - occupancy
+        - coordinates
+        - address
+      properties:
+        id:
+          $ref: '#/components/schemas/LocationId'
+        name:
+          type: string
+          example: LIDL Mannheim Marktplatz
+        details:
+          $ref: '#/components/schemas/LocationDetails'
+        coordinates:
+          $ref: '#/components/schemas/Coordinates'
+        occupancy:
+          $ref: '#/components/schemas/Occupancy'
+        address:
+          $ref: '#/components/schemas/Address'
+    LocationId:
+      title: Location ID
+      description: Location unique identifier
+      type: integer
+      format: int64
+      nullable: false
+      example: 73621836
+    LocationDetails:
+      title: Location details
+      description: Locaiton details
+      type: object
+      nullable: false
+      properties:
+        type:
+          title: Type
+          description: Type of the shop
+          type: string
+          nullable: true
+          enum:
+            - supermarket
+            - chemist
+        brand:
+          title: Brand
+          description: Brand of the shop
+          type: string
+          nullable: true
+          example: "LIDL"
+        openingHours:
+          title: Opening hours
+          description: Opening hours of the shop
+          type: string
+          nullable: true
+          example: "Mo-Fr 7-22 Uhr, Sa-So 9-12 Uhr"
+    Address:
+      title: Address
+      description: Physical address
+      type: object
+      nullable: false
+      required:
+        - country
+        - city
+        - postcode
+        - street
+        - housenumber
+      properties:
+        country:
+          type: string
+          nullable: true
+          example: "DE"
+        city:
+          type: string
+          nullable: true
+          example: "Mannheim"
+        postcode:
+          type: string
+          nullable: true
+          example: "68161"
+        street:
+          type: string
+          nullable: true
+          example: "Hauptstraße"
+        housenumber:
+          type: string
+          nullable: true
+          example: "1-5"
+    Coordinates:
+      title: Coordinates
+      type: object
+      nullable: false
+      required:
+        - latitude
+        - longitude
+      properties:
+        latitude:
+          title: Latitude
+          type: number
+          example: 49.4953494
+        longitude:
+          title: Longitude
+          type: number
+          example: 8.3563969
+    Occupancy:
+      title: Occupancy
+      type: object
+      nullable: false
+      required:
+        - value
+        - count
+        - lastReport
+      properties:
+        value:
+          title: Value
+          description: Occupancy in percent.
+          type: number
+          nullable: true
+          minimum: 0.0
+          maximum: 1.0
+          example: 0.66
+        count:
+          title: Count
+          description: Number of datapoints used for the value calculation.
+          type: integer
+          nullable: false
+          minimum: 0
+          example: 2
+        latestReport:
+          title: Latest Report
+          description: Time of the latest report that was considered to calculate occupancy
+          type: string
+          format: date-time
+          nullable: true
+    OccupancyReport:
+      title: Occupancy Report
+      description: Occupancy report to send
+      type: object
+      nullable: false
+      required:
+        - occupancy
+        - clientType
+      properties:
+        occupancy:
+          title: Occupancy
+          description: Occupancy
+          type: number
+          nullable: false
+          minimum: 0.0
+          maximum: 1.0
+          example: 0.75
+        clientType:
+          title: Client Type
+          description: Type of the client which reported the occupancy
+          type: string
+          nullable: false
+          enum:
+            - IOT
+            - WEB_APP
