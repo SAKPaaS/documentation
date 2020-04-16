@@ -1,14 +1,19 @@
-openapi: 3.0.0
+openapi: 3.0.3
 info:
-  title: SAKPaaS API
-  description: SAKPaaS API
+  title: HappyHamster
+  description: |-
+    HappyHaster. *ATTENTION! This version is deprecated!*
+  version: "1.0"
   license:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0.html
-  version: "1.0"
 servers:
-- url: https://api.happyhamster.org/v1
-  description: Production
+  - description: HappyHamster Production
+    url: https://api.HappyHamster.org/v1
+  - description: HappyHamster Integration
+    url: https://api.int.HappyHamster.org/v1
+  - description: HappyHamster Development
+    url: https://api.dev.HappyHamster.org/v1
 paths:
   /locations:
     get:
