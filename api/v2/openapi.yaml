@@ -153,10 +153,10 @@ paths:
                   $ref: '#/components/schemas/Location'
         '400':
           description: Malformed request
-        '404':
-          description: Malformed request
         '401':
-          description: Malformed request
+          description: "Unauthorized: Not logged in"
+        '404':
+          description: Location not found
     delete:
       description: Remove a favorit by location id for the currently logged in user.
       tags:
@@ -173,10 +173,10 @@ paths:
           description: Success
         '400':
           description: Malformed request
-        '404':
-          description: Malformed request
         '401':
-          description: Malformed request
+          description: "Unauthorized: Not logged in"
+        '404':
+          description: Location not found
 
 components:
   schemas:
