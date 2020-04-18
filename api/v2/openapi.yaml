@@ -116,6 +116,22 @@ paths:
         '400':
           description: Malformed request
 
+  '/users/self/favorites':
+    get:
+      description: List all favorit locations for the currently logged in user.
+      tags:
+        - "User: Favorites"
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Location'
+        '404':
+          description: Not found
   '/users/self/favorites/{id}':
     post:
       description: Add a favorit by location id for the currently logged in user.
@@ -169,22 +185,6 @@ paths:
           description: Success
         '400':
           description: Malformed request
-  '/users/self/favorites':
-    get:
-      description: List all favorit locations for the currently logged in user.
-      tags:
-        - "User: Favorites"
-      responses:
-        '200':
-          description: Success
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Location'
-        '404':
-          description: Not found
 
 components:
   schemas:
