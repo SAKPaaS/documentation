@@ -86,8 +86,8 @@ paths:
                     $ref: '#components/schemas/Coordinates'
                   locations:
                     type: array
-                      items:
-                        $ref: '#/components/schemas/Location'
+                    items:
+                      $ref: '#/components/schemas/Location'
                 maxItems: 100
         '404':
           description: Not found
