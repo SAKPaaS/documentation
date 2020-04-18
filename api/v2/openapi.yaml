@@ -205,7 +205,7 @@ components:
             (Will be null if the user is not logged in.)
           type: boolean
           nullable: true
-          example: false
+          example: true
         details:
           $ref: '#/components/schemas/LocationDetails'
         coordinates:
