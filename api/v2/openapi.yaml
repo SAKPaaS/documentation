@@ -61,16 +61,15 @@ paths:
                 $ref: '#/components/schemas/Location'
         '404':
           description: Not found
-  '/locations/search/{key}':
+  '/locations/search/{query}':
     get:
-      description: |
-        Get details for a specific location.
+      description: Returns the Coordinate and Locations around the 'Search Query'.
       tags:
         - Locations
       parameters:
         - in: path
-          name: key
-          description: key
+          name: query
+          description: Search query
           required: true
           schema:
             type: string
@@ -81,7 +80,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/LocationSearchResult'
-                maxItems: 100
         '404':
           description: Not found
   '/locations/{id}/occupancy':
@@ -286,7 +284,10 @@ components:
         coordinates:
           $ref: '#components/schemas/Coordinates'
         locations:
+          description: List of Locations around the search query
           type: array
+          nullable: false
+          maxItems: 100
           items:
             $ref: '#/components/schemas/Location'
 
