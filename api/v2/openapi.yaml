@@ -118,7 +118,7 @@ paths:
 
   '/users/self/favorites':
     get:
-      description: List all favorit locations for the currently logged in user.
+      description: List all favorite locations for the currently logged in user.
       tags:
         - "User: Favorites"
       responses:
@@ -132,7 +132,7 @@ paths:
                   $ref: '#/components/schemas/Location'
   '/users/self/favorites/{id}':
     post:
-      description: Add a favorit by location id for the currently logged in user.
+      description: Add a favorite by location id for the currently logged in user.
       tags:
         - "User: Favorites"
       parameters:
@@ -158,7 +158,7 @@ paths:
         '404':
           description: Location not found
     delete:
-      description: Remove a favorit by location id for the currently logged in user.
+      description: Remove a favorite by location id for the currently logged in user.
       tags:
         - "User: Favorites"
       parameters:
@@ -188,6 +188,7 @@ components:
       required:
         - id
         - name
+        - favorite
         - occupancy
         - coordinates
         - address
@@ -197,6 +198,14 @@ components:
         name:
           type: string
           example: LIDL Mannheim Marktplatz
+        favorite:
+          title: Favorite flag
+          description: |
+            Whether or not this Location is a favorite of the currently logged in user.
+            (Will be null if the user is not logged in.)
+          type: boolean
+          nullable: true
+          example: false
         details:
           $ref: '#/components/schemas/LocationDetails'
         coordinates:
