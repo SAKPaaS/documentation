@@ -126,6 +126,8 @@ paths:
           name: id
           description: id of the location
           required: true
+          schema:
+            $ref: '#/components/schemas/LocationId'
       requestBody:
         description: id of the location
         required: true
@@ -153,6 +155,8 @@ paths:
           name: id
           description: id of the location
           required: true
+          schema:
+            $ref: '#/components/schemas/LocationId'
       requestBody:
         description: id of the location
         required: true
