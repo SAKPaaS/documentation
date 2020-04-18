@@ -115,12 +115,12 @@ paths:
                 $ref: '#/components/schemas/Location'
         '400':
           description: Malformed request
-  '/users/self/favorits/{id}':
+
+  '/users/self/favorites/{id}':
     post:
-      description: |
-        Add or remove location by id
+      description: Add a favorit by location id for the currently logged in user.
       tags:
-        - Favorits
+        - "User: Favorites"
       parameters:
         - in: path
           name: id
@@ -145,6 +145,9 @@ paths:
         '400':
           description: Malformed request
     delete:
+      description: Remove a favorit by location id for the currently logged in user.
+      tags:
+        - "User: Favorites"
       parameters:
         - in: path
           name: id
@@ -162,12 +165,11 @@ paths:
           description: Success
         '400':
           description: Malformed request
-  '/users/self/favorits':
+  '/users/self/favorites':
     get:
-      description: |
-        Get favorit locations of a user.
+      description: List all favorit locations for the currently logged in user.
       tags:
-        - Favorits
+        - "User: Favorites"
       responses:
         '200':
           description: Success
