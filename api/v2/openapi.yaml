@@ -80,14 +80,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  coordinates:
-                    $ref: '#components/schemas/Coordinates'
-                  locations:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Location'
+                $ref: '#/components/schemas/LocationSearchResult'
                 maxItems: 100
         '404':
           description: Not found
@@ -284,3 +277,16 @@ components:
           enum:
             - IOT
             - WEB_APP
+    LocationSearchResult:
+      title: Location Search Result
+      description: The result for a search request
+      type: object
+      nullable: false
+      properties:
+        coordinates:
+          $ref: '#components/schemas/Coordinates'
+        locations:
+          type: array
+          items:
+            $ref: '#/components/schemas/Location'
+
