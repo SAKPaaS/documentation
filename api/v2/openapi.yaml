@@ -130,6 +130,8 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Location'
+        '401':
+          description: "Unauthorized: Not logged in"
   '/users/self/favorites/{id}':
     post:
       description: Add a favorite by location id for the currently logged in user.
