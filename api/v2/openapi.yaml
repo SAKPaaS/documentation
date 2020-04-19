@@ -112,6 +112,70 @@ paths:
         '400':
           description: Malformed request
 
+  '/users/self/favorites':
+    get:
+      description: List all favorite locations for the currently logged in user.
+      tags:
+        - "User: Favorites"
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Location'
+        '401':
+          description: "Unauthorized: Not logged in"
+  '/users/self/favorites/{id}':
+    post:
+      description: Add a favorite by location id for the currently logged in user.
+      tags:
+        - "User: Favorites"
+      parameters:
+        - in: path
+          name: id
+          description: id of the location
+          required: true
+          schema:
+            $ref: '#/components/schemas/LocationId'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Location'
+        '400':
+          description: Malformed request
+        '401':
+          description: "Unauthorized: Not logged in"
+        '404':
+          description: Location not found
+    delete:
+      description: Remove a favorite by location id for the currently logged in user.
+      tags:
+        - "User: Favorites"
+      parameters:
+        - in: path
+          name: id
+          description: id of the location
+          required: true
+          schema:
+            $ref: '#/components/schemas/LocationId'
+      responses:
+        '200':
+          description: Success
+        '400':
+          description: Malformed request
+        '401':
+          description: "Unauthorized: Not logged in"
+        '404':
+          description: Location not found
+
 components:
   schemas:
     Location:
@@ -122,6 +186,7 @@ components:
       required:
         - id
         - name
+        - favorite
         - occupancy
         - coordinates
         - address
@@ -131,6 +196,14 @@ components:
         name:
           type: string
           example: LIDL Mannheim Marktplatz
+        favorite:
+          title: Favorite flag
+          description: |
+            Whether or not this Location is a favorite of the currently logged in user.
+            (Will be null if the user is not logged in.)
+          type: boolean
+          nullable: true
+          example: true
         details:
           $ref: '#/components/schemas/LocationDetails'
         coordinates:
