@@ -69,16 +69,15 @@ paths:
                 $ref: '#/components/schemas/Location'
         '404':
           description: Not found
-  '/locations/search/{key}':
+  '/locations/search/{query}':
     get:
-      description: |
-        Get details for a specific location.
+      description: Returns the Coordinate and Locations around the 'Search Query'.
       tags:
         - Locations
       parameters:
         - in: path
-          name: key
-          description: key
+          name: query
+          description: Search query
           required: true
           schema:
             type: string
@@ -88,10 +87,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Location'
-                maxItems: 100
+                $ref: '#/components/schemas/LocationSearchResult'
         '404':
           description: Not found
   '/locations/{id}/occupancy':
@@ -126,7 +122,7 @@ paths:
 
   '/users/self/favorites':
     get:
-      description: List all favorit locations for the currently logged in user.
+      description: List all favorite locations for the currently logged in user.
       tags:
         - "User: Favorites"
       responses:
@@ -138,9 +134,11 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Location'
+        '401':
+          description: "Unauthorized: Not logged in"
   '/users/self/favorites/{id}':
     post:
-      description: Add a favorit by location id for the currently logged in user.
+      description: Add a favorite by location id for the currently logged in user.
       tags:
         - "User: Favorites"
       parameters:
@@ -161,12 +159,12 @@ paths:
                   $ref: '#/components/schemas/Location'
         '400':
           description: Malformed request
-        '404':
-          description: Malformed request
         '401':
-          description: Malformed request
+          description: "Unauthorized: Not logged in"
+        '404':
+          description: Location not found
     delete:
-      description: Remove a favorit by location id for the currently logged in user.
+      description: Remove a favorite by location id for the currently logged in user.
       tags:
         - "User: Favorites"
       parameters:
@@ -181,10 +179,10 @@ paths:
           description: Success
         '400':
           description: Malformed request
-        '404':
-          description: Malformed request
         '401':
-          description: Malformed request
+          description: "Unauthorized: Not logged in"
+        '404':
+          description: Location not found
 
 components:
   schemas:
@@ -196,6 +194,7 @@ components:
       required:
         - id
         - name
+        - favorite
         - occupancy
         - coordinates
         - address
@@ -205,6 +204,14 @@ components:
         name:
           type: string
           example: LIDL Mannheim Marktplatz
+        favorite:
+          title: Favorite flag
+          description: |
+            Whether or not this Location is a favorite of the currently logged in user.
+            (Will be null if the user is not logged in.)
+          type: boolean
+          nullable: true
+          example: true
         details:
           $ref: '#/components/schemas/LocationDetails'
         coordinates:
@@ -354,5 +361,18 @@ components:
         - kiosk
         - newsagent
         - convenience
-
-
+    LocationSearchResult:
+      title: Location Search Result
+      description: The result for a search request
+      type: object
+      nullable: false
+      properties:
+        coordinates:
+          $ref: '#components/schemas/Coordinates'
+        locations:
+          description: List of Locations around the search query
+          type: array
+          nullable: false
+          maxItems: 100
+          items:
+            $ref: '#/components/schemas/Location'
