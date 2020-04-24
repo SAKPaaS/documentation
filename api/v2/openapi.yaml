@@ -29,6 +29,14 @@ paths:
           explode: true
           schema:
             $ref: '#/components/schemas/Coordinates'
+        - in: query
+          name: type
+          description: Locationtype
+          required: false
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/LocationType'
       responses:
         '200':
           description: Success
@@ -226,13 +234,7 @@ components:
       nullable: false
       properties:
         type:
-          title: Type
-          description: Type of the shop
-          type: string
-          nullable: true
-          enum:
-            - supermarket
-            - chemist
+          $ref: '#/components/schemas/LocationType'
         brand:
           title: Brand
           description: Brand of the shop
@@ -348,6 +350,17 @@ components:
           enum:
             - IOT
             - WEB_APP
+    LocationType:
+      title: Type
+      description: Type of the shop
+      type: string
+      nullable: true
+      enum:
+        - chemist
+        - beverages
+        - kiosk
+        - newsagent
+        - convenience
     LocationSearchResult:
       title: Location Search Result
       description: The result for a search request
@@ -363,4 +376,3 @@ components:
           maxItems: 100
           items:
             $ref: '#/components/schemas/Location'
-
