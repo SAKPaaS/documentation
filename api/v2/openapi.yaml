@@ -49,14 +49,19 @@ paths:
                 maxItems: 100
   '/locations/{id}':
     get:
-      description: |
-        Get details for a specific location.
+      operationId: getLocationById
+      description: |-
+        Returns the details for a specific location.
       tags:
         - Locations
+      security:
+        - {}
+        - Keycloak: []
       parameters:
         - in: path
           name: id
-          description: id
+          description: |-
+            The id of the `Location` to return.
           required: true
           schema:
             $ref: '#/components/schemas/LocationId'
@@ -67,6 +72,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Location'
+        '400':
+          description: Malformed request
+        '401':
+          description: "Unauthorized: Not logged in"
         '404':
           description: Not found
   '/locations/search/{query}':
@@ -185,6 +194,14 @@ paths:
           description: Location not found
 
 components:
+  securitySchemes:
+    Keycloak:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://auth.happyhamster.org/auth/realms/happyhamster/protocol/openid-connect/auth
+          tokenUrl: https://auth.happyhamster.org/auth/realms/happyhamster/protocol/openid-connect/token
+
   schemas:
     Location:
       title: Location
