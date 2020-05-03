@@ -124,7 +124,7 @@ paths:
     get:
       description: Locationtypes
       tags:
-        - locationtypes
+        - Location Types
       responses:
         '200':
           description: Success
