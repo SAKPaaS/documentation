@@ -120,9 +120,9 @@ paths:
         '400':
           description: Malformed request
 
-  '/users/self/locations/types':
+  '/locations/types':
     get:
-      description: List all locationtypes.
+      description: Locationtypes
       tags:
         - locationtypes
       responses:
@@ -134,8 +134,6 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/LocationType'
-        '404':
-          description: Not found
 
   '/users/self/favorites':
     get:
