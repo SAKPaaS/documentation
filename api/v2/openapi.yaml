@@ -122,7 +122,7 @@ paths:
 
   '/locations/types':
     get:
-      description: Locationtypes
+      description: Location Types
       tags:
         - Location Types
       responses:
