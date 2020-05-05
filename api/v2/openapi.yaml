@@ -16,6 +16,11 @@ servers:
 paths:
   '/locations':
     get:
+      #********************
+      security:
+        - OAuth2: [admin]
+        - {}
+      #++++++++++++++++++++
       tags:
         - Locations
       operationId: searchLocations
@@ -49,6 +54,11 @@ paths:
                 maxItems: 100
   '/locations/{id}':
     get:
+      #********************
+      security:
+        - OAuth2: [admin]
+        - {}
+      #++++++++++++++++++++
       description: |
         Get details for a specific location.
       tags:
@@ -71,6 +81,11 @@ paths:
           description: Not found
   '/locations/search/{key}':
     get:
+      #********************
+      security:
+        - OAuth2: [admin]
+        - {}
+      #++++++++++++++++++++
       description: |
         Get details for a specific location.
       tags:
@@ -96,6 +111,11 @@ paths:
           description: Not found
   '/locations/{id}/occupancy':
     post:
+      #********************
+      security:
+        - OAuth2: [admin]
+        - {}
+      #++++++++++++++++++++
       description: |
         Add or remove current capacity.
       tags:
@@ -126,6 +146,10 @@ paths:
 
   '/users/self/favorites':
     get:
+      #********************
+      security:
+        - OAuth2: [admin]
+      #++++++++++++++++++++
       description: List all favorit locations for the currently logged in user.
       tags:
         - "User: Favorites"
@@ -138,8 +162,16 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Location'
+        #*******************
+        '401':
+          description: not authenticated
+          #****************************+
   '/users/self/favorites/{id}':
     post:
+      #********************
+      security:
+        - OAuth2: [admin]
+      #++++++++++++++++++++
       description: Add a favorit by location id for the currently logged in user.
       tags:
         - "User: Favorites"
@@ -163,8 +195,10 @@ paths:
           description: Malformed request
         '404':
           description: Malformed request
+        #*******************
         '401':
-          description: Malformed request
+          description: not authenticated
+          #****************************+
     delete:
       description: Remove a favorit by location id for the currently logged in user.
       tags:
@@ -183,8 +217,10 @@ paths:
           description: Malformed request
         '404':
           description: Malformed request
+        #*******************
         '401':
-          description: Malformed request
+          description: not authenticated
+          #****************************+
 
 components:
   schemas:
@@ -354,5 +390,29 @@ components:
         - kiosk
         - newsagent
         - convenience
-
+#++++++++++++++++++++++++++++++++++++++
+    SecuritySchemes:
+      BasicAuth:
+        type: http
+        scheme: basic
+      BearerAuth:
+        type: http
+        scheme: bearer
+      ApiKeyAuth:
+        type: apiKey
+        in: header
+        name: X-API-Key
+      OpenID:
+        type: openIdConnect
+        openIdConnectUrl: https://example.com/.well-known/openid-configuration
+      OAuth2:
+        type: oauth2
+        flows:
+          authorizationCode:
+            authorizationUrl: https://example.com/oauth/authorize
+            tokenUrl: https://example.com/oauth/token
+            scopes:
+              read: Grants read access
+              write: Grants write access
+              admin: Grants access to admin operations
 
