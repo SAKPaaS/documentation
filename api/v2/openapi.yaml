@@ -129,6 +129,21 @@ paths:
         '400':
           description: Malformed request
 
+  '/locations/types':
+    get:
+      description: Location Types
+      tags:
+        - Location Types
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/LocationType'
+
   '/users/self/favorites':
     get:
       description: List all favorite locations for the currently logged in user.
