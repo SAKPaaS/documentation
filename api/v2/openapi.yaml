@@ -18,7 +18,7 @@ paths:
     get:
       #********************
       security:
-        - OAuth2: [admin]
+        - Keycloak: []
         - {}
       #++++++++++++++++++++
       tags:
@@ -56,7 +56,7 @@ paths:
     get:
       #********************
       security:
-        - OAuth2: [admin]
+        - Keycloak: []
         - {}
       #++++++++++++++++++++
       description: |
@@ -83,7 +83,7 @@ paths:
     get:
       #********************
       security:
-        - OAuth2: [admin]
+        - Keycloak: []
         - {}
       #++++++++++++++++++++
       description: |
@@ -113,7 +113,7 @@ paths:
     post:
       #********************
       security:
-        - OAuth2: [admin]
+        - Keycloak: []
         - {}
       #++++++++++++++++++++
       description: |
@@ -148,7 +148,7 @@ paths:
     get:
       #********************
       security:
-        - OAuth2: [admin]
+        - Keycloak: []
       #++++++++++++++++++++
       description: List all favorit locations for the currently logged in user.
       tags:
@@ -170,7 +170,7 @@ paths:
     post:
       #********************
       security:
-        - OAuth2: [admin]
+        - Keycloak: []
       #++++++++++++++++++++
       description: Add a favorit by location id for the currently logged in user.
       tags:
@@ -390,16 +390,11 @@ components:
         - kiosk
         - newsagent
         - convenience
-#++++++++++++++++++++++++++++++++++++++
-    SecuritySchemes:
-     Keycloak:
+  securitySchemes:
+    Keycloak:
       type: oauth2
         flows:
           authorizationCode:
             authorizationUrl: https://auth.happyhamster.org/auth/realms/happyhamster/protocol/openid-connect/auth
             tokenUrl: https://auth.happyhamster.org/auth/realms/happyhamster/protocol/openid-connect/token
           scopes:
-            read: Grants read access
-            write: Grants write access
-            admin: Grants access to admin operations
-
