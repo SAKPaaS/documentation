@@ -16,11 +16,9 @@ servers:
 paths:
   '/locations':
     get:
-      #********************
       security:
         - Keycloak: []
         - {}
-      #++++++++++++++++++++
       tags:
         - Locations
       operationId: searchLocations
@@ -54,11 +52,9 @@ paths:
                 maxItems: 100
   '/locations/{id}':
     get:
-      #********************
       security:
         - Keycloak: []
         - {}
-      #++++++++++++++++++++
       description: |
         Get details for a specific location.
       tags:
@@ -81,11 +77,9 @@ paths:
           description: Not found
   '/locations/search/{key}':
     get:
-      #********************
       security:
         - Keycloak: []
         - {}
-      #++++++++++++++++++++
       description: |
         Get details for a specific location.
       tags:
@@ -111,11 +105,9 @@ paths:
           description: Not found
   '/locations/{id}/occupancy':
     post:
-      #********************
       security:
         - Keycloak: []
         - {}
-      #++++++++++++++++++++
       description: |
         Add or remove current capacity.
       tags:
@@ -146,10 +138,8 @@ paths:
 
   '/users/self/favorites':
     get:
-      #********************
       security:
         - Keycloak: []
-      #++++++++++++++++++++
       description: List all favorit locations for the currently logged in user.
       tags:
         - "User: Favorites"
@@ -162,16 +152,12 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Location'
-        #*******************
         '401':
           description: not authenticated
-          #****************************+
   '/users/self/favorites/{id}':
     post:
-      #********************
       security:
         - Keycloak: []
-      #++++++++++++++++++++
       description: Add a favorit by location id for the currently logged in user.
       tags:
         - "User: Favorites"
@@ -217,10 +203,8 @@ paths:
           description: Malformed request
         '404':
           description: Malformed request
-        #*******************
         '401':
           description: not authenticated
-          #****************************+
 
 components:
   schemas:
