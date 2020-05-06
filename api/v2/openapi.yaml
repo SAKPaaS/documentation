@@ -393,8 +393,7 @@ components:
   securitySchemes:
     Keycloak:
       type: oauth2
-        flows:
-          authorizationCode:
-            authorizationUrl: https://auth.happyhamster.org/auth/realms/happyhamster/protocol/openid-connect/auth
-            tokenUrl: https://auth.happyhamster.org/auth/realms/happyhamster/protocol/openid-connect/token
-          scopes:
+      flows:
+        authorizationCode:
+          authorizationUrl: https://auth.happyhamster.org/auth/realms/happyhamster/protocol/openid-connect/auth
+          tokenUrl: https://auth.happyhamster.org/auth/realms/happyhamster/protocol/openid-connect/token
