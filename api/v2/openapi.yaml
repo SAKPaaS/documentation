@@ -16,25 +16,25 @@ servers:
 paths:
   '/locations':
     get:
+      operationId: getLocationsByCoordinates
+      description: |-
+        Searches for locations in the given range.
+      tags:
+        - Locations
       security:
         - Keycloak: []
         - {}
-      tags:
-        - Locations
-      operationId: searchLocations
-      description: |
-        Searches for locations in the given range.
       parameters:
         - in: query
           name: Coordinates
-          description: Latitude
+          description: Latitude and Longitude
           required: true
           explode: true
           schema:
             $ref: '#/components/schemas/Coordinates'
         - in: query
           name: type
-          description: Locationtype
+          description: Location Type
           required: false
           schema:
             type: array
@@ -52,13 +52,14 @@ paths:
                 maxItems: 100
   '/locations/{id}':
     get:
-      security:
-        - Keycloak: []
-        - {}
-      description: |
+      operationId: getLocationById
+      description: |-
         Get details for a specific location.
       tags:
         - Locations
+      security:
+        - Keycloak: []
+        - {}
       parameters:
         - in: path
           name: id
@@ -75,19 +76,27 @@ paths:
                 $ref: '#/components/schemas/Location'
         '404':
           description: Not found
-  '/locations/search/{key}':
+  '/locations/search/{query}':
     get:
+      operationId: searchLocations
+      description: |-
+        Returns the Coordinate and Locations around the 'Search Query'.
+      tags:
+        - Locations
       security:
         - Keycloak: []
         - {}
-      description: |
-        Get details for a specific location.
-      tags:
-        - Locations
       parameters:
+        - in: query
+          name: Coordinates
+          description: Latitude and Longitude
+          required: false
+          explode: true
+          schema:
+            $ref: '#/components/schemas/Coordinates'
         - in: path
-          name: key
-          description: key
+          name: query
+          description: Search query
           required: true
           schema:
             type: string
@@ -97,21 +106,21 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Location'
-                maxItems: 100
+                $ref: '#/components/schemas/LocationSearchResult'
+        '400':
+          description: Bad Request
         '404':
           description: Not found
   '/locations/{id}/occupancy':
     post:
-      security:
-        - Keycloak: []
-        - {}
-      description: |
+      operationId: addOccupancy
+      description: |-
         Add or remove current capacity.
       tags:
         - Occupancy
+      security:
+        - Keycloak: []
+        - {}
       parameters:
         - in: path
           name: id
@@ -136,13 +145,31 @@ paths:
         '400':
           description: Malformed request
 
+  '/locations/types':
+    get:
+      operationId: listLocationTypes
+      description: Location Types
+      tags:
+        - Location Types
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/LocationType'
+
   '/users/self/favorites':
     get:
-      security:
-        - Keycloak: []
-      description: List all favorit locations for the currently logged in user.
+      operationId: listFavorites
+      description: |-
+        List all favorite locations for the currently logged in user.
       tags:
         - "User: Favorites"
+      security:
+        - Keycloak: []
       responses:
         '200':
           description: Success
@@ -153,12 +180,39 @@ paths:
                 items:
                   $ref: '#/components/schemas/Location'
         '401':
-          description: not authenticated
+          description: "Unauthorized: Not logged in"
   '/users/self/favorites/{id}':
     post:
+      operationId: addFavoriteByLocationId
+      description: |-
+        Add a favorite by location id for the currently logged in user.
+      tags:
+        - "User: Favorites"
       security:
         - Keycloak: []
-      description: Add a favorit by location id for the currently logged in user.
+      parameters:
+        - in: path
+          name: id
+          description: id of the location
+          required: true
+          schema:
+            $ref: '#/components/schemas/LocationId'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Location'
+        '400':
+          description: Malformed request
+        '401':
+          description: "Unauthorized: Not logged in"
+        '404':
+          description: Location not found
+    delete:
+      operationId: deleteFavoriteByLocationId
+      description: Remove a favorite by location id for the currently logged in user.
       tags:
         - "User: Favorites"
       parameters:
@@ -174,37 +228,13 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Location'
+                $ref: '#/components/schemas/Location'
         '400':
           description: Malformed request
-        '404':
-          description: Malformed request
-        #*******************
         '401':
-          description: not authenticated
-          #****************************+
-    delete:
-      description: Remove a favorit by location id for the currently logged in user.
-      tags:
-        - "User: Favorites"
-      parameters:
-        - in: path
-          name: id
-          description: id of the location
-          required: true
-          schema:
-            $ref: '#/components/schemas/LocationId'
-      responses:
-        '200':
-          description: Success
-        '400':
-          description: Malformed request
+          description: "Unauthorized: Not logged in"
         '404':
-          description: Malformed request
-        '401':
-          description: not authenticated
+          description: Location not found
 
 components:
   schemas:
@@ -216,6 +246,7 @@ components:
       required:
         - id
         - name
+        - favorite
         - occupancy
         - coordinates
         - address
@@ -225,6 +256,14 @@ components:
         name:
           type: string
           example: LIDL Mannheim Marktplatz
+        favorite:
+          title: Favorite flag
+          description: |
+            Whether or not this Location is a favorite of the currently logged in user.
+            (Will be null if the user is not logged in.)
+          type: boolean
+          nullable: true
+          example: true
         details:
           $ref: '#/components/schemas/LocationDetails'
         coordinates:
@@ -374,6 +413,22 @@ components:
         - kiosk
         - newsagent
         - convenience
+    LocationSearchResult:
+      title: Location Search Result
+      description: The result for a search request
+      type: object
+      nullable: false
+      properties:
+        coordinates:
+          $ref: '#components/schemas/Coordinates'
+        locations:
+          description: List of Locations around the search query
+          type: array
+          nullable: false
+          maxItems: 100
+          items:
+            $ref: '#/components/schemas/Location'
+
   securitySchemes:
     Keycloak:
       type: oauth2
