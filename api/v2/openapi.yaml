@@ -16,11 +16,14 @@ servers:
 paths:
   '/locations':
     get:
+      operationId: getLocationsByCoordinates
+      description: |-
+        Searches for locations in the given range.
       tags:
         - Locations
-      operationId: searchLocations
-      description: |
-        Searches for locations in the given range.
+      security:
+        - Keycloak: []
+        - {}
       parameters:
         - in: query
           name: Coordinates
@@ -49,10 +52,14 @@ paths:
                 maxItems: 100
   '/locations/{id}':
     get:
-      description: |
+      operationId: getLocationById
+      description: |-
         Get details for a specific location.
       tags:
         - Locations
+      security:
+        - Keycloak: []
+        - {}
       parameters:
         - in: path
           name: id
@@ -71,9 +78,14 @@ paths:
           description: Not found
   '/locations/search/{query}':
     get:
-      description: Returns the Coordinate and Locations around the 'Search Query'.
+      operationId: searchLocations
+      description: |-
+        Returns the Coordinate and Locations around the 'Search Query'.
       tags:
         - Locations
+      security:
+        - Keycloak: []
+        - {}
       parameters:
         - in: query
           name: Coordinates
@@ -101,10 +113,14 @@ paths:
           description: Not found
   '/locations/{id}/occupancy':
     post:
-      description: |
+      operationId: addOccupancy
+      description: |-
         Add or remove current capacity.
       tags:
         - Occupancy
+      security:
+        - Keycloak: []
+        - {}
       parameters:
         - in: path
           name: id
@@ -131,6 +147,7 @@ paths:
 
   '/locations/types':
     get:
+      operationId: listLocationTypes
       description: Location Types
       tags:
         - Location Types
@@ -146,9 +163,13 @@ paths:
 
   '/users/self/favorites':
     get:
-      description: List all favorite locations for the currently logged in user.
+      operationId: listFavorites
+      description: |-
+        List all favorite locations for the currently logged in user.
       tags:
         - "User: Favorites"
+      security:
+        - Keycloak: []
       responses:
         '200':
           description: Success
@@ -162,10 +183,13 @@ paths:
           description: "Unauthorized: Not logged in"
   '/users/self/favorites/{id}':
     post:
-      operationId: addFavorite
-      description: Add a favorite by location id for the currently logged in user.
+      operationId: addFavoriteByLocationId
+      description: |-
+        Add a favorite by location id for the currently logged in user.
       tags:
         - "User: Favorites"
+      security:
+        - Keycloak: []
       parameters:
         - in: path
           name: id
@@ -187,7 +211,7 @@ paths:
         '404':
           description: Location not found
     delete:
-      operationId: deleteFavorite
+      operationId: deleteFavoriteByLocationId
       description: Remove a favorite by location id for the currently logged in user.
       tags:
         - "User: Favorites"
@@ -404,3 +428,11 @@ components:
           maxItems: 100
           items:
             $ref: '#/components/schemas/Location'
+
+  securitySchemes:
+    Keycloak:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://auth.happyhamster.org/auth/realms/happyhamster/protocol/openid-connect/auth
+          tokenUrl: https://auth.happyhamster.org/auth/realms/happyhamster/protocol/openid-connect/token
