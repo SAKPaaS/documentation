@@ -151,6 +151,7 @@ paths:
       description: Location Types
       tags:
         - Location Types
+      security: []
       responses:
         '200':
           description: Success
@@ -215,6 +216,8 @@ paths:
       description: Remove a favorite by location id for the currently logged in user.
       tags:
         - "User: Favorites"
+      security:
+        - Keycloak: []
       parameters:
         - in: path
           name: id
