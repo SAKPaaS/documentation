@@ -13,7 +13,21 @@ servers:
     url: https://api.int.HappyHamster.org/v2
   - description: HappyHamster Development
     url: https://api.dev.HappyHamster.org/v2
+
+
+
+# ####  ####  ####  ####  ####  ####  ####  ####  ####  ####  ####  ####  #### #
+# ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ---- #
+# ENDPOINTS
+# ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ---- #
+# ####  ####  ####  ####  ####  ####  ####  ####  ####  ####  ####  ####  #### #
+
 paths:
+
+# ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ---- #
+# Locations
+# ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ---- #
+
   '/locations':
     get:
       operationId: getLocationsByCoordinates
@@ -50,6 +64,7 @@ paths:
                 items:
                   $ref: '#/components/schemas/Location'
                 maxItems: 100
+
   '/locations/{id}':
     get:
       operationId: getLocationById
@@ -76,6 +91,7 @@ paths:
                 $ref: '#/components/schemas/Location'
         '404':
           description: Not found
+
   '/locations/search/{query}':
     get:
       operationId: searchLocations
@@ -111,6 +127,12 @@ paths:
           description: Bad Request
         '404':
           description: Not found
+
+
+# ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ---- #
+# Location Occupancy
+# ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ---- #
+
   '/locations/{id}/occupancy':
     post:
       operationId: addOccupancy
@@ -145,6 +167,11 @@ paths:
         '400':
           description: Malformed request
 
+
+# ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ---- #
+# Location Types
+# ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ---- #
+
   '/locations/types':
     get:
       operationId: listLocationTypes
@@ -161,6 +188,11 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/LocationType'
+
+
+# ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ---- #
+# Location Favorites
+# ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ---- #
 
   '/users/self/favorites':
     get:
@@ -182,6 +214,7 @@ paths:
                   $ref: '#/components/schemas/Location'
         '401':
           description: "Unauthorized: Not logged in"
+
   '/users/self/favorites/{id}':
     post:
       operationId: addFavoriteByLocationId
@@ -211,6 +244,7 @@ paths:
           description: "Unauthorized: Not logged in"
         '404':
           description: Location not found
+
     delete:
       operationId: deleteFavoriteByLocationId
       description: Remove a favorite by location id for the currently logged in user.
@@ -239,8 +273,21 @@ paths:
         '404':
           description: Location not found
 
+
+
+# ####  ####  ####  ####  ####  ####  ####  ####  ####  ####  ####  ####  #### #
+# ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ---- #
+# SCHEMAS
+# ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ---- #
+# ####  ####  ####  ####  ####  ####  ####  ####  ####  ####  ####  ####  #### #
+
 components:
   schemas:
+
+# ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ---- #
+# Locations
+# ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ---- #
+
     Location:
       title: Location
       description: A physical location which represents a supermarket or similar
@@ -350,6 +397,11 @@ components:
           title: Longitude
           type: number
           example: 8.3563969
+
+# ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ---- #
+# Occupancy
+# ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ---- #
+
     Occupancy:
       title: Occupancy
       type: object
@@ -405,6 +457,11 @@ components:
           enum:
             - IOT
             - WEB_APP
+
+# ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ---- #
+# Location Types
+# ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ---- #
+
     LocationType:
       title: Type
       description: Type of the shop
@@ -416,6 +473,11 @@ components:
         - kiosk
         - newsagent
         - convenience
+
+# ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ---- #
+# Location Search Result
+# ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ---- #
+
     LocationSearchResult:
       title: Location Search Result
       description: The result for a search request
@@ -431,6 +493,13 @@ components:
           maxItems: 100
           items:
             $ref: '#/components/schemas/Location'
+
+
+# ####  ####  ####  ####  ####  ####  ####  ####  ####  ####  ####  ####  #### #
+# ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ---- #
+# SECUTIRY SCHEMAS
+# ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ---- #
+# ####  ####  ####  ####  ####  ####  ####  ####  ####  ####  ####  ####  #### #
 
   securitySchemes:
     Keycloak:
