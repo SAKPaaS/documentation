@@ -1,7 +1,8 @@
 openapi: 3.0.3
 info:
   title: HappyHamster
-  description: HappyHamster
+  description: |-
+    The restful API for [HappyHamster](https://happyhamster.org/), please read the Terms of Use before using.
   version: "2.0"
   license:
     name: Apache 2.0
