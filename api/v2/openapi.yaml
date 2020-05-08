@@ -439,3 +439,4 @@ components:
         authorizationCode:
           authorizationUrl: https://auth.happyhamster.org/auth/realms/happyhamster/protocol/openid-connect/auth
           tokenUrl: https://auth.happyhamster.org/auth/realms/happyhamster/protocol/openid-connect/token
+          scopes: {}
