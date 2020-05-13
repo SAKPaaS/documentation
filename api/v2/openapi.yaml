@@ -236,6 +236,48 @@ paths:
         '404':
           description: Location not found
 
+'/users/self/badges':
+    get:
+      operationId: listBadges
+      description: |-
+        List all badges for the currently logged in user.
+      tags:
+        - "User: Badges"
+      security:
+        - Keycloak: []
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Badge'
+        '401':
+          description: "Unauthorized: Not logged in"
+
+  '/users/self/newbadge{id}':
+    get:
+      operationId: latestBadge
+      description: |-
+        Gets ID of the last occupancy report and delivers the badge that resulted from it (if it exists).
+      tags:
+        - "User: Badges"
+      security:
+        - Keycloak: []
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Badge'
+        '401':
+          description: "Unauthorized: Not logged in"
+
 components:
   schemas:
     Location:
@@ -428,6 +470,55 @@ components:
           maxItems: 100
           items:
             $ref: '#/components/schemas/Location'
+    Badge:
+      title: Type
+          description: Badges for certain actions
+          type: string
+          nullable: true
+          enum:
+            - level1
+            - level2
+            - level3
+            - level4
+            - level4
+            - level5
+            - level6
+            - level7
+            - level8
+            - level9
+            - level10
+            - shortNewRateing
+            - shortNewShopRateing
+            - shortTwoDifferentShops
+            - shortShopNeverRated
+            - middleOneRateingPerWeek
+            - middleThreeRateingsPerWeek
+            - middleDailyRatingOneWeek
+            - middleOneWeekEachDayNewShopRated
+            - longFourWeeksSameShopRated
+            - longOneMonthDailyActive
+    UserBadge:
+      title: UserBadge
+      description: Badge of a specific user
+      type: object
+      nullable: false
+      required:
+        - userId
+        - date
+        - uccupancyReportId
+      properties:
+        Type:
+          $ref: '#/components/schemas/Badge'
+        UserId:
+          type: integer
+          format: int64
+        Timestamp:
+          type: string
+          format: date-time
+        OccupancyReportId:
+          type: integer
+          format: int64
+ 
 
   securitySchemes:
     Keycloak:
