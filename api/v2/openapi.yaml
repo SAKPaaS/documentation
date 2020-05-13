@@ -144,6 +144,8 @@ paths:
                 $ref: '#/components/schemas/Location'
         '400':
           description: Malformed request
+        '429':
+          description: Too many requests
 
   '/locations/types':
     get:
