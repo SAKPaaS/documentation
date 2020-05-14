@@ -253,15 +253,15 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Badge'
+                  $ref: '#/components/schemas/UserBadge'
         '401':
           description: "Unauthorized: Not logged in"
 
-  '/users/self/newbadge{id}':
+  '/users/self/badges/newest':
     get:
-      operationId: latestBadge
+      operationId: listNewestBadge
       description: |-
-        Gets ID of the last occupancy report and delivers the badge that resulted from it (if it exists).
+        If the last report generated a badge, this will be returned
       tags:
         - "User: Badges"
       security:
@@ -274,7 +274,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Badge'
+                  $ref: '#/components/schemas/UserBadge'
         '401':
           description: "Unauthorized: Not logged in"
 
@@ -471,32 +471,32 @@ components:
           items:
             $ref: '#/components/schemas/Location'
     Badge:
-      title: Type
-          description: Badges for certain actions
-          type: string
-          nullable: true
-          enum:
-            - level1
-            - level2
-            - level3
-            - level4
-            - level4
-            - level5
-            - level6
-            - level7
-            - level8
-            - level9
-            - level10
-            - shortNewRateing
-            - shortNewShopRateing
-            - shortTwoDifferentShops
-            - shortShopNeverRated
-            - middleOneRateingPerWeek
-            - middleThreeRateingsPerWeek
-            - middleDailyRatingOneWeek
-            - middleOneWeekEachDayNewShopRated
-            - longFourWeeksSameShopRated
-            - longOneMonthDailyActive
+      title: Badge
+      description: Badges for certain actions
+      type: string
+      nullable: true
+      enum:
+        - level1
+        - level2
+        - level3
+        - level4
+        - level4
+        - level5
+        - level6
+        - level7
+        - level8
+        - level9
+        - level10
+        - shortNewRateing
+        - shortNewShopRateing
+        - shortTwoDifferentShops
+        - shortShopNeverRated
+        - middleOneRateingPerWeek
+        - middleThreeRateingsPerWeek
+        - middleDailyRatingOneWeek
+        - middleOneWeekEachDayNewShopRated
+        - longFourWeeksSameShopRated
+        - longOneMonthDailyActive
     UserBadge:
       title: UserBadge
       description: Badge of a specific user
@@ -505,17 +505,17 @@ components:
       required:
         - userId
         - date
-        - uccupancyReportId
+        - occupancyReportId
       properties:
-        Type:
+        type:
           $ref: '#/components/schemas/Badge'
-        UserId:
-          type: integer
-          format: int64
-        Timestamp:
+        userId:
+          type: string
+          pattern: "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+        timestamp:
           type: string
           format: date-time
-        OccupancyReportId:
+        occupancyReportId:
           type: integer
           format: int64
  
