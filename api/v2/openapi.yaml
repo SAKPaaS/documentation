@@ -1,7 +1,8 @@
 openapi: 3.0.3
 info:
   title: HappyHamster
-  description: HappyHamster
+  description: |-
+    The restful API for [HappyHamster](https://happyhamster.org/), please read the Terms of Use before using.
   version: "2.0"
   license:
     name: Apache 2.0
@@ -13,7 +14,21 @@ servers:
     url: https://api.int.HappyHamster.org/v2
   - description: HappyHamster Development
     url: https://api.dev.HappyHamster.org/v2
+
+
+
+# ####  ####  ####  ####  ####  ####  ####  ####  ####  ####  ####  ####  #### #
+# ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ---- #
+# ENDPOINTS
+# ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ---- #
+# ####  ####  ####  ####  ####  ####  ####  ####  ####  ####  ####  ####  #### #
+
 paths:
+
+# ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ---- #
+# Locations
+# ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ---- #
+
   '/locations':
     get:
       operationId: getLocationsByCoordinates
@@ -50,6 +65,7 @@ paths:
                 items:
                   $ref: '#/components/schemas/Location'
                 maxItems: 100
+
   '/locations/{id}':
     get:
       operationId: getLocationById
@@ -76,6 +92,7 @@ paths:
                 $ref: '#/components/schemas/Location'
         '404':
           description: Not found
+
   '/locations/search/{query}':
     get:
       operationId: searchLocations
@@ -111,6 +128,12 @@ paths:
           description: Bad Request
         '404':
           description: Not found
+
+
+# ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ---- #
+# Location Occupancy
+# ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ---- #
+
   '/locations/{id}/occupancy':
     post:
       operationId: addOccupancy
@@ -144,6 +167,13 @@ paths:
                 $ref: '#/components/schemas/Location'
         '400':
           description: Malformed request
+        '429':
+          description: Too many requests
+
+
+# ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ---- #
+# Location Types
+# ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ---- #
 
   '/locations/types':
     get:
@@ -151,6 +181,7 @@ paths:
       description: Location Types
       tags:
         - Location Types
+      security: []
       responses:
         '200':
           description: Success
@@ -160,6 +191,11 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/LocationType'
+
+
+# ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ---- #
+# Location Favorites
+# ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ---- #
 
   '/users/self/favorites':
     get:
@@ -181,6 +217,7 @@ paths:
                   $ref: '#/components/schemas/Location'
         '401':
           description: "Unauthorized: Not logged in"
+
   '/users/self/favorites/{id}':
     post:
       operationId: addFavoriteByLocationId
@@ -210,11 +247,14 @@ paths:
           description: "Unauthorized: Not logged in"
         '404':
           description: Location not found
+
     delete:
       operationId: deleteFavoriteByLocationId
       description: Remove a favorite by location id for the currently logged in user.
       tags:
         - "User: Favorites"
+      security:
+        - Keycloak: []
       parameters:
         - in: path
           name: id
@@ -235,6 +275,11 @@ paths:
           description: "Unauthorized: Not logged in"
         '404':
           description: Location not found
+
+
+# ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ---- #
+# User Badges
+# ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ---- #
 
   '/users/self/badges':
     get:
@@ -278,8 +323,20 @@ paths:
         '401':
           description: "Unauthorized: Not logged in"
 
+
+# ####  ####  ####  ####  ####  ####  ####  ####  ####  ####  ####  ####  #### #
+# ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ---- #
+# SCHEMAS
+# ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ---- #
+# ####  ####  ####  ####  ####  ####  ####  ####  ####  ####  ####  ####  #### #
+
 components:
   schemas:
+
+# ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ---- #
+# Locations
+# ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ---- #
+
     Location:
       title: Location
       description: A physical location which represents a supermarket or similar
@@ -389,6 +446,11 @@ components:
           title: Longitude
           type: number
           example: 8.3563969
+
+# ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ---- #
+# Occupancy
+# ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ---- #
+
     Occupancy:
       title: Occupancy
       type: object
@@ -444,6 +506,11 @@ components:
           enum:
             - IOT
             - WEB_APP
+
+# ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ---- #
+# Location Types
+# ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ---- #
+
     LocationType:
       title: Type
       description: Type of the shop
@@ -455,6 +522,11 @@ components:
         - kiosk
         - newsagent
         - convenience
+
+# ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ---- #
+# Location Search Result
+# ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ---- #
+
     LocationSearchResult:
       title: Location Search Result
       description: The result for a search request
@@ -521,10 +593,14 @@ components:
           format: int64
  
 
+
+# ####  ####  ####  ####  ####  ####  ####  ####  ####  ####  ####  ####  #### #
+# ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ---- #
+# SECUTIRY SCHEMAS
+# ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ---- #
+# ####  ####  ####  ####  ####  ####  ####  ####  ####  ####  ####  ####  #### #
+
   securitySchemes:
     Keycloak:
-      type: oauth2
-      flows:
-        authorizationCode:
-          authorizationUrl: https://auth.happyhamster.org/auth/realms/happyhamster/protocol/openid-connect/auth
-          tokenUrl: https://auth.happyhamster.org/auth/realms/happyhamster/protocol/openid-connect/token
+      type: openIdConnect
+      openIdConnectUrl: https://auth.happyhamster.org/auth/realms/happyhamster/.well-known/openid-configuration
