@@ -236,7 +236,7 @@ paths:
         '404':
           description: Location not found
 
-'/users/self/badges':
+  '/users/self/badges':
     get:
       operationId: listBadges
       description: |-
@@ -503,6 +503,7 @@ components:
       type: object
       nullable: false
       required:
+        - type
         - userId
         - date
         - occupancyReportId
