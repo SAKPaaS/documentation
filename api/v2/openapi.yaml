@@ -117,6 +117,14 @@ paths:
           required: true
           schema:
             type: string
+        - in: query
+          name: type
+          description: Location Type
+          required: false
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/LocationType'
       responses:
         '200':
           description: Success
