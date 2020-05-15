@@ -240,7 +240,7 @@ paths:
     get:
       operationId: listBadges
       description: |-
-        List all badges for the currently logged in user.
+        provides a list of all badges and the total amount of badges for the currently logged in user.
       tags:
         - "User: Badges"
       security:
@@ -251,9 +251,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UserBadge'
+                $ref: '#/components/schemas/AllBadges'
         '401':
           description: "Unauthorized: Not logged in"
 
@@ -261,7 +259,7 @@ paths:
     get:
       operationId: listNewestBadge
       description: |-
-        If the last report generated a badge, this will be returned
+        If the last report generated badges, these will be returned
       tags:
         - "User: Badges"
       security:
@@ -272,9 +270,26 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UserBadge'
+                $ref: '#/components/schemas/NewBadge'
+        '401':
+          description: "Unauthorized: Not logged in"
+
+  '/users/self/levelAndXp':
+    get:
+      operationId: levelAndXp
+      description: |-
+        provides the the level, stage, total xp, xp needed for the next level and current xp for the logged in user
+      tags:
+        - "User: Level and Xp"
+      security:
+        - Keycloak: []
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LevelAndXp'
         '401':
           description: "Unauthorized: Not logged in"
 
@@ -476,50 +491,105 @@ components:
       type: string
       nullable: true
       enum:
-        - level1
-        - level2
-        - level3
-        - level4
-        - level4
-        - level5
-        - level6
-        - level7
-        - level8
-        - level9
-        - level10
-        - shortNewRateing
-        - shortNewShopRateing
-        - shortTwoDifferentShops
-        - shortShopNeverRated
-        - middleOneRateingPerWeek
-        - middleThreeRateingsPerWeek
-        - middleDailyRatingOneWeek
-        - middleOneWeekEachDayNewShopRated
-        - longFourWeeksSameShopRated
-        - longOneMonthDailyActive
-    UserBadge:
-      title: UserBadge
-      description: Badge of a specific user
+        - next_level
+        - next_level_class
+        - report
+        - new_report
+        - two_shops
+        - shop_first_report
+        - week_1
+        - week_3
+        - week_full
+        - week_special
+        - trusted_shop
+        - trusted_user
+    NewBadge:
+      title: NewBadge
+      description: latest Badges of a specific user
       type: object
       nullable: false
       required:
-        - type
-        - userId
-        - date
-        - occupancyReportId
+        - badges
+        - reason
       properties:
-        type:
-          $ref: '#/components/schemas/Badge'
-        userId:
+        badges:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/Badge'
+        reason:
           type: string
-          pattern: "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
-        timestamp:
-          type: string
-          format: date-time
-        occupancyReportId:
+          example: occupancy
+    AllBadges:
+      title: AllBadges
+      description: all Badges of a specific user plus the total ammount of badges
+      type: object
+      nullable: false
+      required:
+        - badgeAndCounter
+        - countAllBadges
+      properties:
+        BadgeAndCounter:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/BadgeAndCounter'
+        NumberOfBadges:
           type: integer
-          format: int64
- 
+          example: 5
+    BadgeAndCounter:
+      title: BadgeAndCounter
+      description: shows how often a user earnd the same badge
+      type: object
+      nullable: false
+      required:
+        - badge
+        - counter
+      properties:
+        badge:
+          type: 
+            $ref: '#/components/schemas/Badge'        
+        counter:
+          type: integer
+          example: 1
+    LevelAndXp:
+      title: LevelAndXp
+      description: level and xp of one user
+      type: object
+      nullable: false
+      required:
+        - level
+        - stage
+        - xpTotal
+        - xpNeeded
+        - xpCurrent
+      properties:
+        stage:
+          type: 
+            $ref: '#/components/schemas/Stage'        
+        level:
+          type: integer
+          example: 5
+        xpTotal:
+          type: integer
+          example: 150
+        xpNeeded:
+          type: integer
+          example: 25
+        xpCurrent:
+          type: integer
+          example: 10
+    Stage:
+      title: Stage
+      description: Stages
+      type: string
+      nullable: true
+      enum:
+        - stage1
+        - stage2
+        - stage3
+        
+
 
   securitySchemes:
     Keycloak:
