@@ -296,7 +296,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AllBadges'
+                $ref: '#/components/schemas/UserBadges'
         '401':
           description: "Unauthorized: Not logged in"
 
@@ -315,7 +315,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/NewBadge'
+                $ref: '#/components/schemas/BadgeUpdate'
         '401':
           description: "Unauthorized: Not logged in"
 
@@ -575,8 +575,8 @@ components:
         - week_special
         - trusted_shop
         - trusted_user
-    NewBadge:
-      title: NewBadge
+    BadgeUpdate:
+      title: BadgeUpdate
       description: latest Badges of a specific user
       type: object
       nullable: false
@@ -592,25 +592,25 @@ components:
         reason:
           type: string
           example: occupancy
-    AllBadges:
-      title: AllBadges
+    UserBadges:
+      title: UserBadges
       description: all Badges of a specific user plus the total ammount of badges
       type: object
       nullable: false
       required:
-        - badgeAndCounter
-        - countAllBadges
+        - badges
+        - countallbadges
       properties:
-        BadgeAndCounter:
+        badges:
           schema:
             type: array
             items:
-              $ref: '#/components/schemas/BadgeAndCounter'
+              $ref: '#/components/schemas/Badges'
         NumberOfBadges:
           type: integer
           example: 5
-    BadgeAndCounter:
-      title: BadgeAndCounter
+    Badges:
+      title: Badges
       description: shows how often a user earnd the same badge
       type: object
       nullable: false
@@ -618,10 +618,9 @@ components:
         - badge
         - counter
       properties:
-        badge:
-          type: 
-            $ref: '#/components/schemas/Badge'        
-        counter:
+        type:
+          $ref: '#/components/schemas/Badge'        
+        count:
           type: integer
           example: 1
     LevelAndXp:
@@ -637,20 +636,18 @@ components:
         - xpCurrent
       properties:
         stage:
-          type: 
-            $ref: '#/components/schemas/Stage'        
+          $ref: '#/components/schemas/Stage'        
         level:
           type: integer
-          example: 5
-        xpTotal:
-          type: integer
-          example: 150
-        xpNeeded:
-          type: integer
-          example: 25
-        xpCurrent:
-          type: integer
-          example: 10
+        xp:
+          type: object
+          properties:
+            total:
+              type: integer
+            needed: 
+              type: integer
+            current:
+              type: integer
     Stage:
       title: Stage
       description: Stages
