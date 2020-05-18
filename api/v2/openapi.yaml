@@ -654,9 +654,11 @@ components:
       type: string
       nullable: true
       enum:
-        - stage1
-        - stage2
-        - stage3
+        - novice
+        - explorer
+        - pro
+        - expert
+        - hero
         
 
 
