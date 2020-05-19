@@ -323,7 +323,7 @@ paths:
     get:
       operationId: levelAndXp
       description: |-
-        provides the the level, stage, total xp, xp needed for the next level and current xp for the logged in user
+        provides the level, stage, total xp, xp needed for the next level and current xp in this level for the logged in user
       tags:
         - "User: Level and Xp"
       security:
