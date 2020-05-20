@@ -319,13 +319,13 @@ paths:
         '401':
           description: "Unauthorized: Not logged in"
 
-  '/users/self/levelAndXp':
+  '/users/self/level':
     get:
-      operationId: levelAndXp
+      operationId: getLevel
       description: |-
         provides the level, stage, total xp, xp needed for the next level and current xp in this level for the logged in user
       tags:
-        - "User: Level and Xp"
+        - "User: Level"
       security:
         - Keycloak: []
       responses:
@@ -334,7 +334,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/LevelAndXp'
+                $ref: '#/components/schemas/Level'
         '401':
           description: "Unauthorized: Not logged in"
 
@@ -557,8 +557,8 @@ components:
           maxItems: 100
           items:
             $ref: '#/components/schemas/Location'
-    Badge:
-      title: Badge
+    BadgeType:
+      title: Badge Type
       description: Badges for certain actions
       type: string
       nullable: true
@@ -576,7 +576,7 @@ components:
         - trusted_shop
         - trusted_user
     BadgeUpdate:
-      title: BadgeUpdate
+      title: Badge Update
       description: latest Badges of a specific user
       type: object
       nullable: false
@@ -585,74 +585,80 @@ components:
         - reason
       properties:
         badges:
-          schema:
-            type: array
-            items:
-              $ref: '#/components/schemas/Badge'
+          type: array
+          items:
+            $ref: '#/components/schemas/Badge'
         reason:
           type: string
-          example: occupancy
+          enum:
+            - occupancy
+            - no_update
     UserBadges:
-      title: UserBadges
+      title: User Badges
       description: all Badges of a specific user plus the total ammount of badges
       type: object
       nullable: false
       required:
         - badges
-        - countallbadges
+        - count
       properties:
         badges:
-          schema:
-            type: array
-            items:
-              $ref: '#/components/schemas/Badges'
-        NumberOfBadges:
+          type: array
+          items:
+            $ref: '#/components/schemas/Badge'
+        count:
           type: integer
-          example: 5
-    Badges:
-      title: Badges
+          example: 1
+    Badge:
+      title: Badge
       description: shows how often a user earned the same badge
       type: object
       nullable: false
       required:
-        - badge
-        - counter
+        - type
+        - count
       properties:
         type:
-          $ref: '#/components/schemas/Badge'        
+          $ref: '#/components/schemas/BadgeType'        
         count:
           type: integer
-          example: 1
-    LevelAndXp:
-      title: LevelAndXp
+          example: 4
+    Level:
+      title: Level
       description: level and xp of one user
       type: object
       nullable: false
       required:
-        - level
         - stage
-        - xpTotal
-        - xpNeeded
-        - xpCurrent
+        - level
+        - xp
       properties:
         stage:
           $ref: '#/components/schemas/Stage'        
         level:
           type: integer
+          minimum: 0
+          example: 2
         xp:
           type: object
+          required:
+            - total
+            - needed
+            - current
           properties:
             total:
               type: integer
+              example: 150
             needed: 
               type: integer
+              example: 20
             current:
               type: integer
+              example: 7
     Stage:
       title: Stage
       description: Stages
       type: string
-      nullable: true
       enum:
         - novice
         - explorer
