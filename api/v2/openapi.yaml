@@ -285,6 +285,67 @@ paths:
           description: Location not found
 
 
+# ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ---- #
+# User Badges
+# ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ---- #
+
+  '/users/self/badges':
+    get:
+      operationId: listBadges
+      description: |-
+        provides a list of all badges and the total amount of badges for the currently logged in user.
+      tags:
+        - "User: Badges"
+      security:
+        - Keycloak: []
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserBadges'
+        '401':
+          description: "Unauthorized: Not logged in"
+
+  '/users/self/badges/newest':
+    get:
+      operationId: listNewestBadge
+      description: |-
+        If the last report generated badges, these will be returned
+      tags:
+        - "User: Badges"
+      security:
+        - Keycloak: []
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadgeUpdate'
+        '401':
+          description: "Unauthorized: Not logged in"
+
+  '/users/self/level':
+    get:
+      operationId: getLevel
+      description: |-
+        provides the level, stage, total xp, xp needed for the next level and current xp in this level for the logged in user
+      tags:
+        - "User: Level"
+      security:
+        - Keycloak: []
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Level'
+        '401':
+          description: "Unauthorized: Not logged in"
+
 
 # ####  ####  ####  ####  ####  ####  ####  ####  ####  ####  ####  ####  #### #
 # ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ----  ---- #
@@ -504,6 +565,116 @@ components:
           maxItems: 100
           items:
             $ref: '#/components/schemas/Location'
+    BadgeType:
+      title: Badge Type
+      description: Badges for certain actions
+      type: string
+      nullable: true
+      enum:
+        - next_level
+        - next_level_class
+        - report
+        - new_report
+        - two_shops
+        - shop_first_report
+        - week_1
+        - week_3
+        - week_full
+        - week_special
+        - trusted_shop
+        - trusted_user
+    BadgeUpdate:
+      title: Badge Update
+      description: latest Badges of a specific user
+      type: object
+      nullable: false
+      required:
+        - badges
+        - reason
+      properties:
+        badges:
+          type: array
+          items:
+            $ref: '#/components/schemas/Badge'
+        reason:
+          type: string
+          enum:
+            - occupancy
+            - no_update
+    UserBadges:
+      title: User Badges
+      description: all Badges of a specific user plus the total ammount of badges
+      type: object
+      nullable: false
+      required:
+        - badges
+        - count
+      properties:
+        badges:
+          type: array
+          items:
+            $ref: '#/components/schemas/Badge'
+        count:
+          type: integer
+          example: 1
+    Badge:
+      title: Badge
+      description: shows how often a user earned the same badge
+      type: object
+      nullable: false
+      required:
+        - type
+        - count
+      properties:
+        type:
+          $ref: '#/components/schemas/BadgeType'        
+        count:
+          type: integer
+          example: 4
+    Level:
+      title: Level
+      description: level and xp of one user
+      type: object
+      nullable: false
+      required:
+        - stage
+        - level
+        - xp
+      properties:
+        stage:
+          $ref: '#/components/schemas/Stage'        
+        level:
+          type: integer
+          minimum: 0
+          example: 2
+        xp:
+          type: object
+          required:
+            - total
+            - needed
+            - current
+          properties:
+            total:
+              type: integer
+              example: 150
+            needed: 
+              type: integer
+              example: 20
+            current:
+              type: integer
+              example: 7
+    Stage:
+      title: Stage
+      description: Stages
+      type: string
+      enum:
+        - novice
+        - explorer
+        - pro
+        - expert
+        - hero
+        
+
 
 
 # ####  ####  ####  ####  ####  ####  ####  ####  ####  ####  ####  ####  #### #
